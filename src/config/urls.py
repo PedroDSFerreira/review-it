@@ -22,8 +22,6 @@ router = routers.DefaultRouter()
 router.register(r"entities", EntityViewSet, basename="entity")
 router.register(r"reviews", ReviewViewSet, basename="review")
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
@@ -36,10 +34,6 @@ urlpatterns = [
                     schema_view.with_ui("swagger", cache_timeout=0),
                     name="schema-swagger-ui",
                 ),
-                # path(
-                #     "api-auth/",
-                #     include("rest_framework.urls", namespace="rest_framework"),
-                # ),
             ]
         ),
     ),
