@@ -6,17 +6,17 @@ from entity.views import EntityViewSet
 from rest_framework import permissions, routers
 from review.views import ReviewViewSet
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Review-it API",
-        default_version="v1",
-        # description="Test description",
-        contact=openapi.Contact(email="pedrodsf21@gmail.com"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
+openapi_info = openapi.Info(
+    title="Review-it API",
+    default_version="v1",
+    # description="Test description",
+    contact=openapi.Contact(email="pedrodsf21@gmail.com"),
+    license=openapi.License(name="MIT License"),
 )
+schema_view = get_schema_view(
+    openapi_info, public=True, permission_classes=(permissions.AllowAny,)
+)
+
 
 router = routers.DefaultRouter()
 router.register(r"entities", EntityViewSet, basename="entity")
