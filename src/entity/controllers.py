@@ -23,3 +23,7 @@ def get_entity_by_id(entity_id):
         return Entity.objects.get(id=entity_id)
     except Entity.DoesNotExist:
         raise NotFound("Entity not found")
+
+
+def get_entities():
+    return Entity.objects.all()

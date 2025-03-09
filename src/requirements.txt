@@ -1,6 +1,7 @@
 asgiref==3.8.1
 Django==5.1.7
 djangorestframework==3.15.2
+drf-nested-routers==0.94.1
 drf-yasg==1.21.9
 inflection==0.5.1
 packaging==24.2

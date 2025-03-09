@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-ss0(a1t_290833w+0(3^(ln^ybb4_mtz9g9&05$3m-bsah*b@h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "review",
     "entity",
+    "utils",
+    "user",
 ]
 
 MIDDLEWARE = [
@@ -58,6 +60,9 @@ ROOT_URLCONF = "config.urls"
 SWAGGER_SETTINGS = {"DEFAULT_INFO": "config.urls.openapi_info"}
 
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "user.api_authentication.APITokenAuthentication",  # Adjust the import path as needed
+    ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }

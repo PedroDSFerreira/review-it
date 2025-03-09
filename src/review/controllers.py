@@ -4,7 +4,6 @@ from .models import Review
 
 
 def create_review(entity, validated_data):
-    # Create a new review for the given entity.
     return Review.objects.create(entity=entity, **validated_data)
 
 
