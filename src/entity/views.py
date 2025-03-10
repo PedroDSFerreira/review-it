@@ -42,6 +42,7 @@ class EntityViewSet(viewsets.ViewSet):
                 schema=PaginatedEntityResponseSerializer,
             )
         },
+        security=[{"APITokenAuth": []}],
     )
     def list(self, request):
         entities = get_entities()
@@ -57,6 +58,7 @@ class EntityViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(
         responses={200: EntitySerializer()},
+        security=[{"APITokenAuth": []}],
     )
     def retrieve(self, _, pk=None):
         entity = get_entity_by_id(pk)
@@ -66,6 +68,7 @@ class EntityViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
         request_body=EntitySerializer,
         responses={201: EntitySerializer()},
+        security=[{"APITokenAuth": []}],
     )
     def create(self, request):
         serializer = EntitySerializer(data=request.data)
@@ -78,6 +81,7 @@ class EntityViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
         request_body=EntitySerializer,
         responses={200: EntitySerializer()},
+        security=[{"APITokenAuth": []}],
     )
     def update(self, request, pk=None):
         entity = get_entity_by_id(pk)
@@ -90,6 +94,7 @@ class EntityViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(
         responses={204: "No Content"},
+        security=[{"APITokenAuth": []}],
     )
     def destroy(self, _, pk=None):
         entity = get_entity_by_id(pk)
