@@ -2,7 +2,9 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from user.auth_methods.api_authentication import APITokenAuthentication
 
 from .controllers import (
     create_entity,
@@ -16,6 +18,8 @@ from .serializers import EntitySerializer, PaginatedEntityResponseSerializer
 
 class EntityViewSet(viewsets.ViewSet):
     serializer_class = EntitySerializer
+    authentication_classes = [APITokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         manual_parameters=[
