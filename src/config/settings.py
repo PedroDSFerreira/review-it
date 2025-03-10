@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+AUTH0_DOMAIN = "your-domain.auth0.com"
+AUTH0_API_AUDIENCE = "https://api.yourdomain.com"
+AUTH_USER_MODEL = 'user.CustomUser'
 
 # Application definition
 
@@ -61,7 +64,8 @@ SWAGGER_SETTINGS = {"DEFAULT_INFO": "config.urls.openapi_info"}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "user.api_authentication.APITokenAuthentication",  # Adjust the import path as needed
+        "user.auth_methods.auth0_authentication.Auth0JWTAuthentication",
+        "user.auth_methods.api_authentication.APITokenAuthentication",
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,

@@ -1,13 +1,12 @@
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-
-from .models import APIToken
+from user.models import APIToken
 
 
 class APITokenAuthentication(BaseAuthentication):
     """
     Expects an HTTP header "Authorization: Token <your_token_here>".
-    Only active tokens are accepted.
+    Only active tokens belonging to a service user are accepted.
     """
 
     keyword = "Token"
@@ -22,9 +21,11 @@ class APITokenAuthentication(BaseAuthentication):
             return None  # Incorrect format
 
         token = parts[1]
-        try:
-            token_obj = APIToken.objects.get(key=token, is_active=True)
-        except APIToken.DoesNotExist:
-            raise AuthenticationFailed("Invalid or inactive API token.")
+        user = APIToken.objects.authenticate(token)
+        if not user:
+            raise AuthenticationFailed(
+                "Invalid or inactive API token, or token does not belong to a service user."
+            )
 
-        return (token_obj.user, token_obj)
+        token_obj = user.api_tokens.get(key=token)
+        return (user, token_obj)
