@@ -12,15 +12,10 @@ class APITokenAuthentication(BaseAuthentication):
     keyword = "Token"
 
     def authenticate(self, request):
-        auth_header = request.headers.get("Authorization")
-        if not auth_header:
-            return None  # No token provided
+        token = request.headers.get("Authorization")
+        if not token:
+            return None
 
-        parts = auth_header.split()
-        if len(parts) != 2 or parts[0] != self.keyword:
-            return None  # Incorrect format
-
-        token = parts[1]
         user = APIToken.objects.authenticate(token)
         if not user:
             raise AuthenticationFailed(
