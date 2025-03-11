@@ -2,18 +2,19 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --upgrade pip
+# Set environment variables for mysqlclient
+ENV MYSQLCLIENT_CFLAGS="-I/usr/include/mariadb"
+ENV MYSQLCLIENT_LDFLAGS="-L/usr/lib/x86_64-linux-gnu -lmariadb"
 
-COPY requirements.txt  /app/
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
-
-EXPOSE 8000
+COPY . .
 
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
