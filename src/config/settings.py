@@ -10,28 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ss0(a1t_290833w+0(3^(ln^ybb4_mtz9g9&05$3m-bsah*b@h"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 
-AUTH0_DOMAIN = "your-domain.auth0.com"
-AUTH0_API_AUDIENCE = "https://api.yourdomain.com"
-AUTH_USER_MODEL = 'user.CustomUser'
+AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
+AUTH0_API_AUDIENCE = os.environ.get("AUTH0_API_AUDIENCE")
 
 # Application definition
+
+AUTH_USER_MODEL = "user.CustomUser"
 
 INSTALLED_APPS = [
     "django.contrib.admin",

@@ -1,0 +1,16 @@
+services:
+  review-it:
+    build: ./src/.
+    ports:
+      - "8000:8000"
+    # depends_on:
+    #   - db
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DEBUG=${DEBUG}
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_API_AUDIENCE=${AUTH0_API_AUDIENCE}
+
+    volumes:
+      - ./src/:/app
