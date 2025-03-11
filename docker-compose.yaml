@@ -1,5 +1,6 @@
 services:
   review-it:
+    container_name: review-it
     build: ./src/.
     ports:
       - "8000:8000"
@@ -12,6 +13,7 @@ services:
       - ./src/:/app
 
   db:
+    container_name: db
     image: mariadb:10.6
     ports:
       - "3306:3306"

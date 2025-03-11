@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
@@ -12,10 +14,10 @@ def create_default_users(sender, **kwargs):
     if sender.name != "user":
         return
 
-    ADMIN_USERNAME = "admin"
-    ADMIN_EMAIL = "admin@example.com"
-    ADMIN_PASSWORD = "adminpassword"
-    SERVICE_USERNAME = "service_account"
+    ADMIN_USERNAME = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
+    ADMIN_EMAIL = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@admin.com")
+    ADMIN_PASSWORD = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin")
+    SERVICE_USERNAME = os.getenv("DEFAULT_SERVICE_USERNAME", "service")
 
     admin_user, created = User.objects.update_or_create(
         username=ADMIN_USERNAME,
