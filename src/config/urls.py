@@ -10,14 +10,16 @@ from review.views import ReviewViewSet
 openapi_info = openapi.Info(
     title="Review-it API",
     default_version="v1",
-    description="A review platform for businesses",
+    description="A review platform.",
     contact=openapi.Contact(email="pedrodsf21@gmail.com"),
     license=openapi.License(name="MIT License"),
 )
-schema_view = get_schema_view(
-    openapi_info, public=True, permission_classes=(permissions.AllowAny,)
-)
 
+schema_view = get_schema_view(
+    openapi_info,
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 router = routers.DefaultRouter()
 router.register(r"entities", EntityViewSet, basename="entity")

@@ -4,8 +4,9 @@ from entity.controllers import get_entity_by_id
 from rest_framework import status, viewsets
 from rest_framework.exceptions import NotFound
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from user.auth_methods.auth0_authentication import Auth0JWTAuthentication
 
 from .controllers import (
     create_review,
@@ -14,12 +15,13 @@ from .controllers import (
     get_reviews_for_entity,
     update_review,
 )
-from .serializers import ReviewSerializer, PaginatedReviewResponseSerializer
+from .serializers import PaginatedReviewResponseSerializer, ReviewSerializer
 
 
 class ReviewViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
     serializer_class = ReviewSerializer
+    authentication_classes = [Auth0JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         manual_parameters=[
@@ -42,9 +44,10 @@ class ReviewViewSet(viewsets.ViewSet):
                 schema=PaginatedReviewResponseSerializer,
             )
         },
+        security=[{"Auth0JWT": []}],
     )
-    def list(self, request, entity_id=None):
-        entity = get_entity_by_id(entity_id)
+    def list(self, request, entity_pk=None):
+        entity = get_entity_by_id(entity_pk)
         reviews = get_reviews_for_entity(entity)
 
         if request.query_params.get("all") == "true":
@@ -58,10 +61,11 @@ class ReviewViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(
         responses={200: ReviewSerializer()},
+        security=[{"Auth0JWT": []}],
     )
-    def retrieve(self, _, pk=None, entity_id=None):
+    def retrieve(self, _, pk=None, entity_pk=None):
         review = get_review_by_id(pk)
-        if str(review.entity.id) != str(entity_id):
+        if str(review.entity.id) != str(entity_pk):
             raise NotFound("Review not found for the specified entity")
         serializer = ReviewSerializer(review)
         return Response(serializer.data)
@@ -69,9 +73,10 @@ class ReviewViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
         request_body=ReviewSerializer,
         responses={201: ReviewSerializer()},
+        security=[{"Auth0JWT": []}],
     )
-    def create(self, request, entity_id=None):
-        entity = get_entity_by_id(entity_id)
+    def create(self, request, entity_pk=None):
+        entity = get_entity_by_id(entity_pk)
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid():
             review = create_review(entity, serializer.validated_data)
@@ -83,10 +88,11 @@ class ReviewViewSet(viewsets.ViewSet):
     @swagger_auto_schema(
         request_body=ReviewSerializer,
         responses={200: ReviewSerializer()},
+        security=[{"Auth0JWT": []}],
     )
-    def update(self, request, pk=None, entity_id=None):
+    def update(self, request, pk=None, entity_pk=None):
         review = get_review_by_id(pk)
-        if str(review.entity.id) != str(entity_id):
+        if str(review.entity.id) != str(entity_pk):
             raise NotFound("Review not found for the specified entity")
         serializer = ReviewSerializer(review, data=request.data)
         if serializer.is_valid():
@@ -96,10 +102,11 @@ class ReviewViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(
         responses={204: "No Content"},
+        security=[{"Auth0JWT": []}],
     )
-    def destroy(self, _, pk=None, entity_id=None):
+    def destroy(self, _, pk=None, entity_pk=None):
         review = get_review_by_id(pk)
-        if str(review.entity.id) != str(entity_id):
+        if str(review.entity.id) != str(entity_pk):
             raise NotFound("Review not found for the specified entity")
         delete_review(review)
         return Response(status=status.HTTP_204_NO_CONTENT)

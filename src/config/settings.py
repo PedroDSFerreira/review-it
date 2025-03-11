@@ -63,20 +63,21 @@ ROOT_URLCONF = "config.urls"
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": "config.urls.openapi_info",
     "SECURITY_DEFINITIONS": {
+        "Auth0JWT": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "Authorization",
+            "description": "JWT Authentication via Auth0. Format: 'Bearer <your_jwt_token>'",
+        },
         "APITokenAuth": {
             "type": "apiKey",
             "in": "header",
             "name": "Authorization",
             "description": "Token-based authentication. Format: 'Token <your_api_token>'",
         },
-        "Auth0JWT": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT",
-            "description": "JWT Authentication via Auth0. Format: 'Bearer <your_jwt_token>'",
-        },
-    }
+    },
 }
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

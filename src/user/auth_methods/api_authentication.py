@@ -5,22 +5,27 @@ from user.models import APIToken
 
 class APITokenAuthentication(BaseAuthentication):
     """
-    Expects an HTTP header "Authorization: Token <your_token_here>".
     Only active tokens belonging to a service user are accepted.
+    Expects an HTTP header "Authorization: Token <your_token_here>".
     """
 
     keyword = "Token"
 
     def authenticate(self, request):
-        token = request.headers.get("Authorization")
-        if not token:
-            return None
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return None  # No token provided
 
-        user = APIToken.objects.authenticate(token)
-        if not user:
+        parts = auth_header.split()
+        if len(parts) != 2 or parts[0] != self.keyword:
             raise AuthenticationFailed(
-                "Invalid or inactive API token, or token does not belong to a service user."
+                "Invalid token format. Expected format: 'Token <your_api_token>'"
             )
 
-        token_obj = user.api_tokens.get(key=token)
-        return (user, token_obj)
+        token = parts[1]
+        try:
+            token_obj = APIToken.objects.get(key=token, is_active=True)
+        except APIToken.DoesNotExist:
+            raise AuthenticationFailed("Invalid or inactive API token.")
+
+        return (token_obj.user, token_obj)

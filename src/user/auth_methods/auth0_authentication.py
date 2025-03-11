@@ -1,4 +1,3 @@
-# user/auth_methods/auth0_authentication.py
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,22 +12,20 @@ class Auth0JWTAuthentication(BaseAuthentication):
     """
     Authenticates requests using an Auth0-issued JWT.
     Expects the header: "Authorization: Bearer <token>".
-    Maps the token to a local user using the auth0_sub field.
     """
 
     def authenticate(self, request):
-        auth_header = get_authorization_header(request).split()
-        if not auth_header or auth_header[0].lower() != b"bearer":
-            return None
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return None  # No token provided
 
-        if len(auth_header) == 1:
-            raise AuthenticationFailed("Invalid token header. No credentials provided.")
-        if len(auth_header) > 2:
+        parts = auth_header.split()
+        if len(parts) != 2 or parts[0].lower() != "bearer":
             raise AuthenticationFailed(
-                "Invalid token header. Token string should not contain spaces."
+                "Invalid token format. Expected format: 'Bearer <your_jwt_token>'"
             )
 
-        token = auth_header[1].decode("utf-8")
+        token = parts[1]
 
         auth0_domain = settings.AUTH0_DOMAIN
         api_audience = settings.AUTH0_API_AUDIENCE
