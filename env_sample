@@ -1,0 +1,8 @@
+# AUTH0
+AUTH0_DOMAIN=domain.us.auth0.com
+AUTH0_API_AUDIENCE=https://dummy/api
+
+# DJANGO
+SECRET_KEY=secret
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+DEBUG=True
