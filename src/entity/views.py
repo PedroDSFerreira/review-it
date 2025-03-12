@@ -45,7 +45,7 @@ class EntityViewSet(viewsets.ViewSet):
         security=[{"APITokenAuth": []}],
     )
     def list(self, request):
-        entities = get_entities()
+        entities = get_entities(request.user)
 
         if request.query_params.get("all") == "true":
             serializer = EntitySerializer(entities, many=True)
@@ -60,8 +60,8 @@ class EntityViewSet(viewsets.ViewSet):
         responses={200: EntitySerializer()},
         security=[{"APITokenAuth": []}],
     )
-    def retrieve(self, _, pk=None):
-        entity = get_entity_by_id(pk)
+    def retrieve(self, request, pk=None):
+        entity = get_entity_by_id(request.user, pk)
         serializer = EntitySerializer(entity)
         return Response(serializer.data)
 
@@ -73,7 +73,7 @@ class EntityViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = EntitySerializer(data=request.data)
         if serializer.is_valid():
-            entity = create_entity(serializer.validated_data)
+            entity = create_entity(request.user, serializer.validated_data)
             out_serializer = EntitySerializer(entity)
             return Response(out_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -84,10 +84,10 @@ class EntityViewSet(viewsets.ViewSet):
         security=[{"APITokenAuth": []}],
     )
     def update(self, request, pk=None):
-        entity = get_entity_by_id(pk)
+        entity = get_entity_by_id(request.user, pk)
         serializer = EntitySerializer(entity, data=request.data)
         if serializer.is_valid():
-            entity = update_entity(entity, serializer.validated_data)
+            entity = update_entity(request.user, entity, serializer.validated_data)
             out_serializer = EntitySerializer(entity)
             return Response(out_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -96,7 +96,7 @@ class EntityViewSet(viewsets.ViewSet):
         responses={204: "No Content"},
         security=[{"APITokenAuth": []}],
     )
-    def destroy(self, _, pk=None):
-        entity = get_entity_by_id(pk)
-        delete_entity(entity)
+    def destroy(self, request, pk=None):
+        entity = get_entity_by_id(request.user, pk)
+        delete_entity(request.user, entity)
         return Response(status=status.HTTP_204_NO_CONTENT)
