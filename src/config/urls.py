@@ -31,6 +31,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include(router.urls)),
     path("api/v1/", include(entity_router.urls)),
+    path("embed/", include("embed.urls")),
     path(
         "api/v1/docs/",
         schema_view.with_ui("swagger", cache_timeout=0),

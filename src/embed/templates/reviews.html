@@ -1,0 +1,94 @@
+<div>
+  {% include "review_form.html" %}
+
+  <h2 class="review-title">Reviews</h2>
+  <hr class="separator" />
+
+  <div class="review-container">
+    {% for review in reviews %}
+    <div class="review">
+      <div class="review-header">
+        <h3>{{ review.title }}</h3>
+        <span class="review-date">{{ review.created_at|date:"F j, Y" }}</span>
+      </div>
+      <div class="rating">
+        {% for i in iterator %}
+        <span class="star {% if i <= review.rating %}filled{% endif %}"
+          >&#9733;</span
+        >
+        {% endfor %}
+      </div>
+      <p>{{ review.description }}</p>
+    </div>
+    {% empty %}
+    <p>No reviews available.</p>
+    {% endfor %}
+  </div>
+
+  {% include "pagination.html" %}
+</div>
+
+<style>
+  /* Fixed text size styling for embedding */
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 18px; /* Fixed base text size */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .separator {
+    border: none;
+    height: 2px;
+    background-color: #ddd;
+    margin: 20px 0;
+  }
+  .review-title {
+    font-size: 24px;
+    padding: 20px;
+    color: #333;
+  }
+  .review-container {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .review {
+    border-bottom: 1px solid #ddd;
+    padding: 20px 0;
+  }
+  .review:last-child {
+    border-bottom: none;
+  }
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .review h3 {
+    font-size: 22px;
+    margin: 0 0 10px;
+  }
+  .review-date {
+    font-size: 14px;
+    color: #999;
+  }
+  .review p {
+    margin: 0;
+    line-height: 1.4;
+  }
+  .rating {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .star {
+    font-size: 26px;
+    color: #ddd;
+  }
+  .star.filled {
+    color: #ffd700;
+  }
+</style>

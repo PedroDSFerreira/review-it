@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "entity",
     "utils",
     "user",
+    "embed",
 ]
 
 MIDDLEWARE = [
@@ -90,7 +91,9 @@ REST_FRAMEWORK = {
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            "embed/templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

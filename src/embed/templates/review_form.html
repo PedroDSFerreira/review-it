@@ -1,0 +1,155 @@
+<div class="review-form">
+  <h3>Create a Review</h3>
+  <form
+    id="review-form"
+    method="POST"
+    action="{% url 'entity-reviews-list' entity_pk=entity_id %}"
+  >
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required />
+    </div>
+
+    <div class="form-group">
+      <label>Rating:</label>
+      <div id="star-rating" class="rating">
+        {% for i in iterator %}
+        <span class="star" data-value="{{ i }}">&#9733;</span>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="rating" id="rating" value="0" required />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required></textarea>
+    </div>
+
+    <button type="submit" class="submit-button">Submit Review</button>
+  </form>
+</div>
+
+<style>
+  /* Review Form Styling */
+  .review-form {
+    background-color: #f1f1f1;
+    padding: 20px 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  .review-form h3 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 18px;
+    color: #555;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    font-size: 18px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    outline: none;
+  }
+
+  /* Rating Stars */
+  .rating {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .star {
+    font-size: 26px;
+    color: #ddd;
+    transition: color 0.2s ease;
+  }
+  .star.filled {
+    color: #ffd700;
+  }
+
+  /* Submit Button */
+  .submit-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stars = document.querySelectorAll("#star-rating .star");
+    const ratingInput = document.getElementById("rating");
+    const form = document.getElementById("review-form");
+
+    // Update rating stars on click
+    function updateRating(value) {
+      ratingInput.value = value;
+      stars.forEach((star) => {
+        star.classList.toggle("filled", star.dataset.value <= value);
+      });
+    }
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => updateRating(star.dataset.value));
+    });
+
+    // Handle form submission with AJAX
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            window.location.reload(); // Refresh the page on success
+          } else {
+            return response.json().then((data) => {
+              alert(
+                "Error submitting review: " + (data.detail || "Unknown error"),
+              );
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to submit review. Please try again.");
+        });
+    });
+  });
+</script>
