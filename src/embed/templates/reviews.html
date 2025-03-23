@@ -1,5 +1,5 @@
 <div>
-  {% include "review_form.html" %}
+  {% if auth_token|length > 0 %} {% include "review_form.html" %} {% endif %}
 
   <h2 class="review-title">Reviews</h2>
   <hr class="separator" />

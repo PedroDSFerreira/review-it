@@ -20,8 +20,8 @@ from .serializers import PaginatedReviewResponseSerializer, ReviewSerializer
 
 class ReviewViewSet(viewsets.ViewSet):
     serializer_class = ReviewSerializer
-    # authentication_classes = [Auth0JWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [Auth0JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(
         manual_parameters=[

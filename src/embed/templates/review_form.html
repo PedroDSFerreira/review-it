@@ -133,6 +133,7 @@
         body: formData,
         headers: {
           "X-Requested-With": "XMLHttpRequest",
+          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
         },
       })
         .then((response) => {
