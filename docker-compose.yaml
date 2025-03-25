@@ -5,15 +5,15 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      db:
+      mariadb:
         condition: service_healthy
     env_file:
       - .env
     volumes:
       - ./src/:/app
 
-  db:
-    container_name: db
+  mariadb:
+    container_name: mariadb
     image: mariadb:10.6
     ports:
       - "3306:3306"

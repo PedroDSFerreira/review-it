@@ -39,7 +39,7 @@ exec:
 	$(call docker_compose_cmd) exec review-it /bin/bash
 
 db-exec:
-	$(call docker_compose_cmd) exec db /bin/bash
+	$(call docker_compose_cmd) exec mariadb /bin/bash
 
 generate-docs:
 	$(call docker_compose_cmd) exec review-it python manage.py generate_swagger > swagger.yaml
