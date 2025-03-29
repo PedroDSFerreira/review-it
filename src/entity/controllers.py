@@ -23,9 +23,9 @@ def delete_entity(user, entity):
     entity.delete()
 
 
-def get_entity_by_id(entity_id):
+def get_entity_by_id(user, entity_id):
     try:
-        entity = Entity.objects.get(id=entity_id)
+        entity = Entity.objects.get(id=entity_id, user=user)
         return entity
     except Entity.DoesNotExist:
         raise NotFound("Entity not found")
