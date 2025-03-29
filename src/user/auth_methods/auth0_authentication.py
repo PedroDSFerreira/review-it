@@ -53,11 +53,11 @@ class Auth0JWTAuthentication(BaseAuthentication):
         except Exception:
             raise AuthenticationFailed("Unable to parse authentication token.")
 
-        auth0_sub = payload.get("sub")
-        if not auth0_sub:
+        jwt_sub = payload.get("sub")
+        if not jwt_sub:
             raise AuthenticationFailed("Auth0 token missing subject claim.")
 
         user, created = User.objects.get_or_create(
-            auth0_sub=auth0_sub, defaults={"username": auth0_sub, "user_type": "user"}
+            jwt_sub=jwt_sub, defaults={"username": jwt_sub, "user_type": "user"}
         )
         return (user, payload)
