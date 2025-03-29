@@ -33,7 +33,7 @@ def embedded_reviews(request, entity_id):
             "iterator": range(1, 6),
             "page_obj": page_obj,
             "entity_id": entity_id,
-            "auth_token": token,
+            "jwt_token": token,
             "user": user_payload,
         },
     )

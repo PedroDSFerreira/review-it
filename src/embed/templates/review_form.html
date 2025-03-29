@@ -133,7 +133,7 @@
         body: formData,
         headers: {
           "X-Requested-With": "XMLHttpRequest",
-          ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+          ...(jwt_token ? { Authorization: `Bearer ${jwt_token}` } : {}),
         },
       })
         .then((response) => {

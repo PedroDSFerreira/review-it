@@ -1,5 +1,5 @@
 <div>
-  {% if auth_token|length > 0 %} {% include "review_form.html" %} {% endif %}
+  {% if jwt_token|length > 0 %} {% include "review_form.html" %} {% endif %}
 
   <h2 class="review-title">Reviews</h2>
   <hr class="separator" />
