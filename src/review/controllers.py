@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404
 from .models import Review
 
 
-def create_review(entity, validated_data):
-    return Review.objects.create(entity=entity, **validated_data)
+def create_review(entity, user, validated_data):
+    return Review.objects.create(entity=entity, user=user, **validated_data)
 
 
 def update_review(review, validated_data):

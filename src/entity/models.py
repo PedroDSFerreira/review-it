@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from django.db import models
-from user.models import CustomUser
+from user.models import CustomUser as User
 
 
 class Entity(models.Model):
@@ -20,7 +20,7 @@ class Entity(models.Model):
         auto_now_add=True, help_text="Timestamp when the entity was created."
     )
     user = models.ForeignKey(
-        CustomUser,
+        User,
         on_delete=models.CASCADE,
         related_name="entities",
         help_text="The service user that owns this entity.",

@@ -45,7 +45,7 @@ class EntityViewSet(viewsets.ViewSet):
         security=[{"APITokenAuth": []}],
     )
     def list(self, request):
-        entities = get_entities(request.user)
+        entities = get_entities(request.user).order_by("title")
 
         if request.query_params.get("all") == "true":
             serializer = EntitySerializer(entities, many=True)
