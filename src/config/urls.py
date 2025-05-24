@@ -6,6 +6,8 @@ from entity.views import EntityViewSet
 from rest_framework import permissions, routers
 from rest_framework_nested.routers import NestedDefaultRouter
 from review.views import ReviewViewSet
+from django.conf import settings
+from django.conf.urls.static import static
 
 openapi_info = openapi.Info(
     title="Review-it API",
@@ -38,3 +40,6 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
