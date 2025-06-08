@@ -23,13 +23,26 @@ jobs:
       - name: Build & run services
         run: |
           docker compose up --build -d
-
           # Wait for mariadb to become healthy
           until docker compose exec -T mariadb mysqladmin ping -h localhost --silent; do
             echo "Waiting for database…"
             sleep 5
           done
 
+      - name: Create and grant test database privileges
+        run: |
+          # Use the root account to create & grant privileges on the test DB
+          docker compose exec -T mariadb mysql \
+            -u root \
+            -p"${MYSQL_ROOT_PASSWORD}" \
+            -e "\
+              CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
+              GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%'; \
+              FLUSH PRIVILEGES;\
+            "
+
+      - name: Run migrations & tests
+        run: |
           docker compose exec -T review-it sh -c "\
             python manage.py migrate --noinput && \
             python manage.py test \
