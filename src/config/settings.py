@@ -110,7 +110,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
+TEST_DB_NAME = os.environ.get('MYSQL_TEST_DATABASE') or f"{os.environ['MYSQL_DATABASE']}_test"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -122,7 +122,18 @@ DATABASES = {
         "OPTIONS": {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
         },
-    }
+        'TEST': {
+            'MIRROR': 'test',
+        },
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.mysql',
+        "NAME": TEST_DB_NAME,
+        'USER': os.environ['MYSQL_USER'],
+        'PASSWORD': os.environ['MYSQL_PASSWORD'],
+        'HOST': os.environ['MYSQL_HOST'],
+        'PORT': 3306,
+    },
 }
 
 
