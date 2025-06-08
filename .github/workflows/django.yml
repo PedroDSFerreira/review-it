@@ -36,15 +36,15 @@ jobs:
           MYSQL_DATABASE:      ${{ secrets.MYSQL_DATABASE }}
           MYSQL_USER:          ${{ secrets.MYSQL_USER }}
         run: |
-          docker compose exec -T mariadb sh -c '\
-            export MYSQL_PWD="$MYSQL_ROOT_PASSWORD" && \
-            mysql -uroot -e " \
-              CREATE DATABASE IF NOT EXISTS \`'${MYSQL_DATABASE}'_test\`; \
-              GRANT ALL PRIVILEGES ON \`'${MYSQL_DATABASE}'_test\`.* TO '\'''"${MYSQL_USER}"'"'\@'\%'\; \
-              FLUSH PRIVILEGES; \
-            " \
-          '
-
+          docker compose exec -T mariadb mysqladmin ping -h localhost --silent
+      
+          docker compose exec -T mariadb bash -c "
+            MYSQL_PWD='${MYSQL_ROOT_PASSWORD}' mysql -uroot <<-EOSQL
+              CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`;
+              GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%';
+              FLUSH PRIVILEGES;
+            EOSQL
+          "
 
       - name: Run migrations & tests
         run: |
