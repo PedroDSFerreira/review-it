@@ -1,8 +1,10 @@
 name: Django CI
 
 on:
-  push:       { branches: [ main ] }
-  pull_request: { branches: [ main ] }
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
@@ -15,36 +17,15 @@ jobs:
       - name: Copy env-sample
         run: cp env-sample .env
 
-      - name: Load .env vars into GitHub Actions environment
-        shell: bash
-        run: |
-          while IFS='=' read -r key value; do
-            # skip comments and empty lines
-            [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
-            echo "$key=$value" >> "$GITHUB_ENV"
-          done < .env
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build & start services
+      - name: Build & start review-it service
         run: |
-          docker compose up --build -d
+          docker compose up --build -d review-it
 
-          # Wait for mariadb to become healthy
-          until docker compose exec -T mariadb mysqladmin ping -h localhost --silent; do
-            echo "Waiting for database…"
-            sleep 5
-          done
-
-      - name: Grant full access to test DB
-        run: |
-          docker compose exec -T mariadb mysql \
-            --user=root \
-            --password="${{ env.MYSQL_ROOT_PASSWORD }}" \
-            -e "GRANT ALL PRIVILEGES ON \`${{ env.MYSQL_DATABASE }}_test\`.* TO '${{ env.MYSQL_USER }}'@'%'; FLUSH PRIVILEGES;"
-
-      - name: Run migrations & tests
+      - name: Run migrations & tests (using SQLite)
         run: |
           docker compose exec -T review-it sh -c "\
             python manage.py migrate --noinput && \
