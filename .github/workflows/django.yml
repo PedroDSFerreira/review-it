@@ -15,11 +15,14 @@ jobs:
       - name: Copy env-sample
         run: cp env-sample .env
 
-      - name: Load env variables into shell
+      - name: Load .env vars into GitHub Actions environment
+        shell: bash
         run: |
-          set -o allexport
-          source .env
-          set +o allexport
+          while IFS='=' read -r key value; do
+            # skip comments and empty lines
+            [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+            echo "$key=$value" >> "$GITHUB_ENV"
+          done < .env
           
       - name: Debug show key vars
         shell: bash
@@ -45,7 +48,7 @@ jobs:
         run: |
           docker compose exec -T mariadb mysql \
             --user=root \
-            --password="rootpassword" \
+            --password="${MYSQL_ROOT_PASSWORD}" \
             -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
                 GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%'; \
                 FLUSH PRIVILEGES;"
