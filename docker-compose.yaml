@@ -9,8 +9,6 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    volumes:
-      - ./src/:/app
 
   mariadb:
     container_name: mariadb
