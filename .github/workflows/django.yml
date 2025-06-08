@@ -1,4 +1,4 @@
-name: Django CI (with Docker-Compose + env-sample)
+name: Django CI
 
 on:
   push:
@@ -22,15 +22,15 @@ jobs:
 
       - name: Build & run services
         run: |
-          docker-compose up --build -d
+          docker compose up --build -d
 
           # Wait for mariadb to become healthy
-          until docker-compose exec -T mariadb mysqladmin ping -h localhost --silent; do
+          until docker compose exec -T mariadb mysqladmin ping -h localhost --silent; do
             echo "Waiting for database…"
             sleep 5
           done
 
-          docker-compose exec -T review-it sh -c "\
+          docker compose exec -T review-it sh -c "\
             python manage.py migrate --noinput && \
             python manage.py test \
           "
@@ -38,4 +38,4 @@ jobs:
       - name: Tear down
         if: always()
         run: |
-          docker-compose down --volumes --remove-orphans
+          docker compose down --volumes --remove-orphans
