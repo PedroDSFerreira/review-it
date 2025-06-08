@@ -39,11 +39,8 @@ jobs:
           docker compose exec -T mariadb mysql \
             --user=root \
             --password="${MYSQL_ROOT_PASSWORD}" \
-            --host=localhost \
-            --port=3306 \
             -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
-                GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* \
-                  TO '${MYSQL_USER}'@'%'; \
+                GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%'; \
                 FLUSH PRIVILEGES;"
 
       - name: Run migrations & tests
