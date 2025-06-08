@@ -37,23 +37,12 @@ jobs:
             sleep 5
           done
 
-      - name: Prepare test DB
+      - name: Run migrations & tests
         run: |
-          docker compose exec -T mariadb mysql \
-            --user=root \
-            --password="${{ env.MYSQL_ROOT_PASSWORD }}" \
-            --execute="\
-              CREATE DATABASE IF NOT EXISTS \`${{ env.MYSQL_DATABASE }}_test\`; \
-              GRANT ALL PRIVILEGES ON \`${{ env.MYSQL_DATABASE }}_test\`.* \
-                TO '${{ env.MYSQL_USER }}'@'%'; \
-              FLUSH PRIVILEGES;"
-
           docker compose exec -T review-it sh -c "\
-            python manage.py migrate --noinput --database=test"
-
-      - name: Run tests
-        run: |
-          docker compose exec -T review-it python manage.py test
+            python manage.py migrate --noinput && \
+            python manage.py test \
+          "
 
       - name: Tear down
         if: always()
