@@ -37,7 +37,7 @@ jobs:
             sleep 5
           done
 
-      - name: Grant privileges on test DB
+      - name: Prepare test DB
         run: |
           docker compose exec -T mariadb mysql \
             --user=root \
@@ -48,12 +48,12 @@ jobs:
                 TO '${{ env.MYSQL_USER }}'@'%'; \
               FLUSH PRIVILEGES;"
 
-      - name: Run migrations & tests
-        run: |
           docker compose exec -T review-it sh -c "\
-            python manage.py migrate --noinput && \
-            python manage.py test \
-          "
+            python manage.py migrate --noinput --database=test"
+
+      - name: Run tests
+        run: |
+          docker compose exec -T review-it python manage.py test
 
       - name: Tear down
         if: always()
