@@ -83,7 +83,7 @@ Review-it is a microservice platform that enables users to create, manage, and v
    Use Docker Compose to start the services. You have two options:
 
    ```bash
-     make upd
+   make upd
    ```
 
 5. **Run Database Migrations**
