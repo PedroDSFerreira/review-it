@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-it-dep
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review-it
+  template:
+    metadata:
+      labels:
+        app: review-it
+    spec:
+      containers:
+        - name: review-it
+          image: registry.deti/wayly/review-it:v1.1.1
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: review-secrets
+      initContainers:
+        - name: wait-for-mariadb
+          image: busybox:1.37
+          command:
+            [
+              "sh",
+              "-c",
+              "until nc -z mariadb 3306; do echo waiting for mariadb; sleep 2; done;",
+            ]
+        - name: migrate
+          image: registry.deti/wayly/review-it:v1.1.1
+          command:
+            [
+              "sh",
+              "-c",
+              "python manage.py migrate --noinput && python manage.py collectstatic --noinput",
+            ]
+          envFrom:
+            - secretRef:
+                name: review-secrets

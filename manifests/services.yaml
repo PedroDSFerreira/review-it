@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  
+spec:
+  selector:
+    app: mariadb
+  ports:
+    - port: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: review-it
+  
+spec:
+  selector:
+    app: review-it
+  ports:
+    - port: 8000
