@@ -23,13 +23,6 @@ jobs:
             [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
             echo "$key=$value" >> "$GITHUB_ENV"
           done < .env
-          
-      - name: Debug show key vars
-        shell: bash
-        run: |
-          echo "ROOT PW: $MYSQL_ROOT_PASSWORD"
-          echo "DB NAME: $MYSQL_DATABASE"
-          echo "USER:    $MYSQL_USER"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -43,15 +36,6 @@ jobs:
             echo "Waiting for database…"
             sleep 5
           done
-
-      - name: Create & grant test DB
-        run: |
-          docker compose exec -T mariadb mysql \
-            --user=root \
-            --password="${MYSQL_ROOT_PASSWORD}" \
-            -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
-                GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%'; \
-                FLUSH PRIVILEGES;"
 
       - name: Run migrations & tests
         run: |
