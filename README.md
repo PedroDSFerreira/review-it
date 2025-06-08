@@ -1,6 +1,48 @@
 # Review-it
 
-Review-it is a review platform microservice that allows users to create reviews for specific
+Review-it is a microservice platform that enables users to create, manage, and view reviews for specific entities, such as products or services, within a distributed system architecture.
+
+## Features
+
+* **🧱 Entities**
+
+  * Services can define entities that need reviews (e.g., products, listings).
+  * An entity represents any reviewable item on the platform.
+
+* **📝 Reviews**
+
+  * Users can write, edit, and manage reviews for each entity.
+
+* **🔐 Authentication**
+
+  * JWT via Auth0 for user login.
+  * API tokens for service-to-service communication.
+
+* **🔍 Pagination & Filtering**
+
+  * List endpoints support pagination and filtering.
+  * Option to retrieve all results at once.
+
+* **📘 API Docs**
+
+  * OpenAPI/Swagger docs are auto-generated and available via a web UI.
+
+* **💻 Embeddable Review UI**
+
+  * Drop-in HTML interface to show and manage reviews.
+  * Users can create, edit, and delete reviews directly from it.
+
+* **🧪 Testing & Quality**
+
+  * Unit tests for models and authentication.
+  * GitHub Actions for automated testing and security checks.
+
+* **🚀 Deployment**
+
+  * Easy setup with Docker and Docker Compose.
+  * Health checks and persistent storage included.
+  * Kubernetes support available.
+
 
 ## Requirements
 
@@ -93,10 +135,23 @@ Review-it is a review platform microservice that allows users to create reviews 
 
 Authentication is handled via two methods:
 
-- **Token-based Authentication:** Use a header with the format `Token <your_api_token>`.
-- **JWT Authentication (Auth0):** Use a header with the format `Bearer <your_jwt_token>`.
+- **Token-based Authentication:** Use a header with the format `Token <your_api_token>`, to manage entities.
+- **JWT Authentication (Auth0):** Use a header with the format `Bearer <your_jwt_token>`, to manage reviews.
 
 For further details, refer to the generated `swagger.yaml` file.
+
+## Embeddable Review UI
+
+Review-it provides an embeddable HTML interface that allows you to display and manage reviews for any entity directly within your own website or application. This UI is styled with Bootstrap and supports:
+
+- Viewing paginated reviews for a specific entity.
+- Creating and managing your own reviews (if authenticated with a JWT).
+- Interactive star ratings and modals for review actions.
+
+To use the embed, simply include the appropriate URL (e.g., `/embed/entities/<entity_id>/reviews`) in an iframe or as a standalone page.  
+You can pass the user JWT token as a query parameter (`?token=...`) to enable actions for users.
+
+This makes it easy to integrate reviews into any web platform with minimal setup.
 
 ## License
 
