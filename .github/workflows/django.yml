@@ -20,6 +20,13 @@ jobs:
           set -o allexport
           source .env
           set +o allexport
+          
+      - name: Debug show key vars
+        shell: bash
+        run: |
+          echo "ROOT PW: $MYSQL_ROOT_PASSWORD"
+          echo "DB NAME: $MYSQL_DATABASE"
+          echo "USER:    $MYSQL_USER"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
