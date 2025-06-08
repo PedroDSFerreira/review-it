@@ -1,10 +1,8 @@
 name: Django CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  push:       { branches: [ main ] }
+  pull_request: { branches: [ main ] }
 
 jobs:
   test:
@@ -17,10 +15,16 @@ jobs:
       - name: Copy env-sample
         run: cp env-sample .env
 
+      - name: Load env variables into shell
+        run: |
+          set -o allexport
+          source .env
+          set +o allexport
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build & run services
+      - name: Build & start services
         run: |
           docker compose up --build -d
 
@@ -31,19 +35,16 @@ jobs:
           done
 
       - name: Create & grant test DB
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE:      ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER:          ${{ secrets.MYSQL_USER }}
         run: |
-          docker compose exec \
-            -e MYSQL_PWD="$MYSQL_ROOT_PASSWORD" \
-            -T mariadb \
-            mysql \
-              -uroot \
-              -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
-                  GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* TO '${MYSQL_USER}'@'%'; \
-                  FLUSH PRIVILEGES;"
+          docker compose exec -T mariadb mysql \
+            --user=root \
+            --password="${MYSQL_ROOT_PASSWORD}" \
+            --host=localhost \
+            --port=3306 \
+            -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}_test\`; \
+                GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}_test\`.* \
+                  TO '${MYSQL_USER}'@'%'; \
+                FLUSH PRIVILEGES;"
 
       - name: Run migrations & tests
         run: |
