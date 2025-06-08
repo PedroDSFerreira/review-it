@@ -41,11 +41,13 @@ class CustomUserModelTest(TestCase):
         token.save()
         self.assertIsNone(APIToken.objects.authenticate(token.key))
 
-        # Token for non-service user should not authenticate
+        # Token for non-service user should not be assignable
         user = CustomUser.objects.create_user(username="notservice2", password="pass", user_type="user")
         bad_token = APIToken(user=service_user)
         bad_token.save()
         with self.assertRaises(ValueError):
             bad_token.user = user
             bad_token.save()
-        self.assertIsNone(APIToken.objects.authenticate(bad_token.key))
+
+        # The token is still valid for the original service user
+        self.assertEqual(APIToken.objects.authenticate(bad_token.key), service_user)
