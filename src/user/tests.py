@@ -14,9 +14,9 @@ class CustomUserModelTest(TestCase):
         self.assertTrue(token.key)
 
     def test_create_admin_user(self):
-        admin = CustomUser.objects.create_user(username="admin", password="pass", user_type="admin")
+        admin = CustomUser.objects.create_user(username="admin_test", password="pass", user_type="admin")
         self.assertEqual(admin.user_type, "admin")
-        self.assertFalse(admin.is_superuser)  # Not superuser by default
+        self.assertFalse(admin.is_superuser)
 
     def test_api_token_only_for_service_user(self):
         user = CustomUser.objects.create_user(username="notservice", password="pass", user_type="user")
@@ -45,6 +45,7 @@ class CustomUserModelTest(TestCase):
         user = CustomUser.objects.create_user(username="notservice2", password="pass", user_type="user")
         bad_token = APIToken(user=service_user)
         bad_token.save()
-        bad_token.user = user
-        bad_token.save()
+        with self.assertRaises(ValueError):
+            bad_token.user = user
+            bad_token.save()
         self.assertIsNone(APIToken.objects.authenticate(bad_token.key))
