@@ -1,6 +1,6 @@
 asgiref==3.8.1
 cffi==1.17.1
-cryptography==44.0.2
+cryptography==48.0.1
 Django==5.1.13
 djangorestframework==3.15.2
 drf-nested-routers==0.94.1
